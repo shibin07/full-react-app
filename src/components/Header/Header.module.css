@@ -1,0 +1,7 @@
+.header {
+  color: #455058;
+  height: 60px;
+}
+.header.background {
+  background-color: #eeeeee;
+}
