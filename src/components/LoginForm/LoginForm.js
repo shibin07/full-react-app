@@ -1,8 +1,16 @@
-import React, { useState, useEffect, useReducer, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useReducer,
+  useContext,
+  useRef,
+} from "react";
 import Button from "../Button/Button";
 import TextBox from "../TextBox/TextBox";
 import styles from "./LoginForm.module.css";
 import AuthContext from "../../store/auth-context";
+import { useDispatch } from "react-redux";
+import { headerActions } from "../../store/data-store";
 
 const userNameReducer = (state, action) => {
   // action has the object that is passed in the dispatch method
@@ -32,8 +40,13 @@ const LoginForm = (props) => {
   // const [isUserValid, setIsUserValid] = useState(false);
   // const [isPwdValid, setIsPwdValid] = useState(false);
 
+  const useNameRef = useRef();
+
+  const reduxDispatch = useDispatch();
   const authContext = useContext(AuthContext);
   const [isFormValid, setIsFormValid] = useState(false);
+
+  console.log("the login form component");
 
   const [userNameState, dispatchUsername] = useReducer(userNameReducer, {
     value: "",
@@ -50,6 +63,10 @@ const LoginForm = (props) => {
   //The below logic will help in that
   const { isValid: userIsValid } = userNameState;
   const { isValid: passwordIsValid } = passwordState;
+
+  useEffect(() => {
+    useNameRef.current.focus();
+  }, []);
 
   // Proper way of working with form and validating the form variables
   useEffect(() => {
@@ -68,6 +85,10 @@ const LoginForm = (props) => {
   const authenticate = () => {
     dispatchUsername({ type: "default" });
     dispatchPassword({ type: "default" });
+    reduxDispatch(
+      // the value passing heare is ({type: SOME_UNIQUE_IDENTIFIER, payload: value that is passed})
+      headerActions.updateHeader({ title: "Welcome to home page" })
+    );
     authContext.onLoginHandler(true);
   };
   const onChangeUsername = (userName) => {
@@ -81,6 +102,7 @@ const LoginForm = (props) => {
     <div className="row justify-content-center py-5">
       <div className={`col ${styles.content_form}`}>
         <TextBox
+          ref={useNameRef}
           labelTxt="<strong>User Name</strong>"
           placeholder="Please enter the User Name"
           onChange={onChangeUsername}

@@ -4,8 +4,12 @@ import MovieList from "../MovieList/MovieList";
 import AuthContext from "../../store/auth-context";
 import useHttp from "../../hooks/use-http";
 import { orderBy } from "lodash";
+import { useSelector } from "react-redux";
 
 const Home = () => {
+  // if we are using multiple redux slice then we have to use the identifier
+  // const { loginCount } = useSelector((state) => state.header);
+  const { loginCount } = useSelector((state) => state);
   const [movies, setMovies] = useState([]);
 
   // this is the normal fetch request
@@ -101,6 +105,7 @@ const Home = () => {
         <div className="row">
           <div className="col text-center">
             <h1>Welcome to home page</h1>
+            <h1>You have logged in {loginCount}</h1>
           </div>
         </div>
         <div className="row">

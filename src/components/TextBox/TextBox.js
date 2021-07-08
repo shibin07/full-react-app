@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useRef, useImperativeHandle } from "react";
 import parse from "html-react-parser";
 
-const TextBox = (props) => {
+const TextBox = React.forwardRef((props, ref) => {
   const handleValue = (event) => {
     props.onChange(event.target.value);
   };
+  const inputRef = useRef();
+
+  const active = () => {
+    inputRef.current.focus();
+  };
+
+  useImperativeHandle(ref, () => {
+    return {
+      focus: active,
+    };
+  });
+
   let formText, label;
   let lableTxt = props.labelTxt || "";
   let extraClassname = props.className || "";
@@ -12,7 +24,11 @@ const TextBox = (props) => {
   let classNames = `form-control ${extraClassname}`;
 
   if (props.labelTxt) {
-    label = <label className="form-label">{parsedTxt}</label>;
+    label = (
+      <label htmlFor={props.id} className="form-label">
+        {parsedTxt}
+      </label>
+    );
   }
   if (props.showTextBelow) {
     formText = <small className="text-muted">{props.yeildTxt}</small>;
@@ -22,6 +38,8 @@ const TextBox = (props) => {
       <div className="form-group">
         {label}
         <input
+          ref={inputRef}
+          id={props.id}
           type="text"
           className={classNames}
           onChange={handleValue}
@@ -33,6 +51,6 @@ const TextBox = (props) => {
       </div>
     </form>
   );
-};
+});
 
 export default TextBox;
